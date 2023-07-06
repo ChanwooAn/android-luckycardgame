@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         val playerCardList = viewModel.playersCardList.value!!
         viewModel.playersCardList.observe(this) {
             for (playerNum in playerCardList.indices) {
-                if (playerCardList[playerNum].isNotEmpty()) {
+                if (playerCardList[playerNum].cardList.isNotEmpty()) {
                     card_section_tv_list[playerNum].text = ""
                 } else {
                     card_section_tv_list[playerNum].text = getCardSectionText(playerNum)
@@ -140,11 +140,13 @@ class MainActivity : AppCompatActivity() {
     private fun setCardRecyclerView(playerNum: Int) {
         card_section_rv_list[playerNum].apply {
             val cardAdapter = CardSectionAdapter(
-                viewModel.playersCardList.value!![playerNum],
+                viewModel.playersCardList.value!![playerNum].cardList,
                 viewModel.cardWidth,
                 viewModel.cardHeight,
                 playerNum
             )
+            adapter = cardAdapter
+            layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.HORIZONTAL, false)
             adapter = cardAdapter
             layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.HORIZONTAL, false)
         }
