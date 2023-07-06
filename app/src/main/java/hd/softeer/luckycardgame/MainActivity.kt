@@ -2,18 +2,15 @@ package hd.softeer.luckycardgame
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import hd.softeer.luckycardgame.databinding.ActivityMainBinding
-import hd.softeer.luckycardgame.model.Animal
-import hd.softeer.luckycardgame.model.Card
-import hd.softeer.luckycardgame.model.CardNumber
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -50,7 +47,6 @@ class MainActivity : AppCompatActivity() {
 
         observeCardSize()
         setPlayerNumberButtonListener()
-
     }
 
     /**
@@ -77,10 +73,6 @@ class MainActivity : AppCompatActivity() {
             }
             observeCardList()
         }//각 버튼에 맞는 인원수를 viewmodel에 전달하여 카드 list를 적절히 초기화하고, observe하여 view를 update한다.
-    }
-
-    private fun removeCardListObserver() {
-        viewModel.playersCardList.removeObservers(this)
     }
 
     private fun observeCardList() {
@@ -152,39 +144,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun setSharedCardRecyclerView(playerNum: Int) {
-        val gridSpan = when (playerNum) {
-            4 -> {
-                4
-            }
-
-            5 -> {
-                6
-            }
-
-            else -> {
-                5
-            }
-        }
-
-        binding.rvCardShared.apply {
-            val cardAdapter = CardSectionAdapter(
-                viewModel.sharedCardList.value!!,
-                viewModel.cardWidth,
-                viewModel.cardHeight,
-                3
-            )
-            adapter = cardAdapter
-            layoutManager = GridLayoutManager(this@MainActivity, gridSpan)
-            for (i in 0 until itemDecorationCount) {
-                val decoration = getItemDecorationAt(i)
-                if (decoration is SharedCardItemDecorator) {
-                    removeItemDecoration(decoration)
-                }
-            }
-            addItemDecoration(SharedCardItemDecorator(gridSpan))
-        }
-    }
 
     /**
      * 인원 수에 맞게 card 영역의 visibility를 적절히 초기화한다.
@@ -224,6 +183,43 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun removeCardListObserver() {
+        viewModel.playersCardList.removeObservers(this)
+    }
+
+    private fun setSharedCardRecyclerView(playerNum: Int) {
+        val gridSpan = when (playerNum) {
+            4 -> {
+                4
+            }
+
+            5 -> {
+                6
+            }
+
+            else -> {
+                5
+            }
+        }
+
+        binding.rvCardShared.apply {
+            val cardAdapter = CardSectionAdapter(
+                viewModel.sharedCardList.value!!,
+                viewModel.cardWidth,
+                viewModel.cardHeight,
+                3
+            )
+            adapter = cardAdapter
+            layoutManager = GridLayoutManager(this@MainActivity, gridSpan)
+            for (i in 0 until itemDecorationCount) {
+                val decoration = getItemDecorationAt(i)
+                if (decoration is SharedCardItemDecorator) {
+                    removeItemDecoration(decoration)
+                }
+            }
+            addItemDecoration(SharedCardItemDecorator(gridSpan))
+        }
+    }
 
     /**
      * card가 담기는 영역의 크기인 textView의 size를 관찰하여 적절하게 카드 size가 설정될 수 있도록 한다.
