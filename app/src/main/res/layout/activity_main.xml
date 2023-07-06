@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -35,24 +36,57 @@
         app:layout_constraintGuide_percent="0.98" />
 
 
-    <View
-        android:id="@+id/top_section"
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/segbtn_select_num_of_player"
         android:layout_width="0dp"
         android:layout_height="44dp"
-        android:background="#F5F513"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="@id/end_constraint"
         app:layout_constraintStart_toStartOf="@+id/start_constraint"
-        app:layout_constraintTop_toTopOf="@id/top_constraint" />
+        app:layout_constraintTop_toTopOf="@id/top_constraint"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <Button
+            android:id="@+id/bt_player_three"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/seg_btn_select_num_of_player_text_first"
+            android:textAlignment="textStart"
+            app:icon="@drawable/seg_btn_select_num_of_player_background" />
+
+        <Button
+            android:id="@+id/bt_player_four"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/seg_btn_select_num_of_player_text_second"
+            android:textAlignment="textStart"
+            app:icon="@drawable/seg_btn_select_num_of_player_background" />
+
+        <Button
+            android:id="@+id/bt_player_five"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/seg_btn_select_num_of_player_text_third"
+            android:textAlignment="textStart"
+            app:icon="@drawable/seg_btn_select_num_of_player_background" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <TextView
-        android:id="@+id/card_section_a"
+        android:id="@+id/tv_card_section_a"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/card_section_background"
         android:includeFontPadding="false"
         android:padding="12dp"
-        android:text="A"
+        android:text="@string/card_section_A_text"
         android:textColor="@color/card_section_text_color"
         android:textSize="50sp"
         android:textStyle="bold"
@@ -60,17 +94,31 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/top_section" />
+        app:layout_constraintTop_toBottomOf="@id/segbtn_select_num_of_player" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_card_section_a"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/card_section_background"
+        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_a"
+        app:layout_constraintEnd_toEndOf="@id/end_constraint"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintStart_toStartOf="@id/start_constraint"
+        app:layout_constraintTop_toBottomOf="@id/segbtn_select_num_of_player" />
+
 
     <TextView
-        android:id="@+id/card_section_b"
+        android:id="@+id/tv_card_section_b"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/card_section_background"
         android:includeFontPadding="false"
         android:padding="12dp"
-        android:text="B"
+        android:text="@string/card_section_B_text"
         android:textColor="@color/card_section_text_color"
         android:textSize="50sp"
         android:textStyle="bold"
@@ -78,17 +126,30 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/card_section_a" />
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_a" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_card_section_b"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/card_section_background"
+        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_b"
+        app:layout_constraintEnd_toEndOf="@id/end_constraint"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintStart_toStartOf="@id/start_constraint"
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_a" />
 
     <TextView
-        android:id="@+id/card_section_c"
+        android:id="@+id/tv_card_section_c"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/card_section_background"
         android:includeFontPadding="false"
         android:padding="12dp"
-        android:text="C"
+        android:text="@string/card_section_C_text"
         android:textColor="@color/card_section_text_color"
         android:textSize="50sp"
         android:textStyle="bold"
@@ -96,17 +157,31 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/card_section_b" />
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_b" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_card_section_c"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/card_section_background"
+        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_c"
+        app:layout_constraintEnd_toEndOf="@id/end_constraint"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintStart_toStartOf="@id/start_constraint"
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_b" />
+
 
     <TextView
-        android:id="@+id/card_section_d"
+        android:id="@+id/tv_card_section_d"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/card_section_background"
         android:includeFontPadding="false"
         android:padding="12dp"
-        android:text="D"
+        android:text="@string/card_section_D_text"
         android:textColor="@color/card_section_text_color"
         android:textSize="50sp"
         android:textStyle="bold"
@@ -114,17 +189,30 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/card_section_c" />
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_c" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_card_section_d"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/card_section_background"
+        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_d"
+        app:layout_constraintEnd_toEndOf="@id/end_constraint"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintStart_toStartOf="@id/start_constraint"
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_c" />
 
     <TextView
-        android:id="@+id/card_section_e"
+        android:id="@+id/tv_card_section_e"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/card_section_background"
         android:includeFontPadding="false"
         android:padding="12dp"
-        android:text="E"
+        android:text="@string/card_section_E_text"
         android:textColor="@color/card_section_text_color"
         android:textSize="50sp"
         android:textStyle="bold"
@@ -132,7 +220,28 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/card_section_d" />
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_d" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_card_section_e"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/card_section_background"
+        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_e"
+        app:layout_constraintEnd_toEndOf="@id/end_constraint"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.12"
+        app:layout_constraintStart_toStartOf="@id/start_constraint"
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_d" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/bottom_section_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierAllowsGoneWidgets="false"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="tv_card_section_d,tv_card_section_e" />
 
 
     <View
@@ -144,7 +253,17 @@
         app:layout_constraintBottom_toBottomOf="@id/bottom_constraint"
         app:layout_constraintEnd_toEndOf="@id/end_constraint"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/card_section_e" />
+        app:layout_constraintTop_toBottomOf="@id/bottom_section_barrier" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_card_shared"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bottom_card_section_background"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_section"
+        app:layout_constraintEnd_toEndOf="@id/end_constraint"
+        app:layout_constraintStart_toStartOf="@id/start_constraint"
+        app:layout_constraintTop_toBottomOf="@id/bottom_section_barrier" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
