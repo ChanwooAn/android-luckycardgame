@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import hd.softeer.luckycardgame.databinding.ActivityMainBinding
 
 
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -75,11 +74,16 @@ class MainActivity : AppCompatActivity() {
         }//각 버튼에 맞는 인원수를 viewmodel에 전달하여 카드 list를 적절히 초기화하고, observe하여 view를 update한다.
     }
 
+
+    private fun removeCardListObserver() {
+        viewModel.playersCardList.removeObservers(this)
+    }
+
     private fun observeCardList() {
         val playerCardList = viewModel.playersCardList.value!!
         viewModel.playersCardList.observe(this) {
             for (playerNum in playerCardList.indices) {
-                if (playerCardList[playerNum].isNotEmpty()) {
+                if (playerCardList[playerNum].cardList.isNotEmpty()) {
                     cardSectionTvList[playerNum].text = ""
                 } else {
                     cardSectionTvList[playerNum].text = getCardSectionText(playerNum)
@@ -129,15 +133,13 @@ class MainActivity : AppCompatActivity() {
     }//player의 카드영역은 player의 수에 따라 바뀌는게 없으므로 따로 빼주어 최초 한 번만 layoutmanager와 item decorator 를 설정한다.
 
     private fun setCardRecyclerView(playerNum: Int) {
-        cardSectionRvList[playerNum].apply {
+        with(cardSectionRvList[playerNum]) {
             val cardAdapter = CardSectionAdapter(
-                viewModel.playersCardList.value!![playerNum],
+                viewModel.playersCardList.value!![playerNum].cardList,
                 viewModel.cardWidth,
                 viewModel.cardHeight,
                 playerNum
             )
-            adapter = cardAdapter
-            layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.HORIZONTAL, false)
             adapter = cardAdapter
             layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.HORIZONTAL, false)
         }
@@ -183,10 +185,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun removeCardListObserver() {
-        viewModel.playersCardList.removeObservers(this)
-    }
-
     private fun setSharedCardRecyclerView(playerNum: Int) {
         val gridSpan = when (playerNum) {
             4 -> {
@@ -202,12 +200,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.rvCardShared.apply {
+        with(binding.rvCardShared) {
             val cardAdapter = CardSectionAdapter(
-                viewModel.sharedCardList.value!!,
-                viewModel.cardWidth,
-                viewModel.cardHeight,
-                3
+                viewModel.sharedCardList.value!!, viewModel.cardWidth, viewModel.cardHeight, 3
             )
             adapter = cardAdapter
             layoutManager = GridLayoutManager(this@MainActivity, gridSpan)
