@@ -6,16 +6,16 @@ import androidx.lifecycle.ViewModel
 import hd.softeer.luckycardgame.model.Animal
 import hd.softeer.luckycardgame.model.Card
 import hd.softeer.luckycardgame.model.CardNumber
-import hd.softeer.luckycardgame.model.User
 
 class MainActivityViewModel : ViewModel() {
+
     private val totalCardList: MutableList<Card> = mutableListOf()
 
-    private val _playersCardList = MutableLiveData<List<User>>()
-    val playersCardList: LiveData<List<User>> get() = _playersCardList
+    private val _playersCardList = MutableLiveData<MutableList<List<Card>>>()
+    val playersCardList: LiveData<MutableList<List<Card>>> get() = _playersCardList
 
-    private val _sharedCardList = MutableLiveData<List<Card>>()
-    val sharedCardList: LiveData<List<Card>> get() = _sharedCardList
+    private val _sharedCardList = MutableLiveData<MutableList<Card>>()
+    val sharedCardList: LiveData<MutableList<Card>> get() = _sharedCardList
 
 
     private var _cardWidth = 0
@@ -35,8 +35,10 @@ class MainActivityViewModel : ViewModel() {
         divideCardToPlayers(playerNum)
     }
 
+
     fun setCardWidth(scale: Float, parentPixelWidth: Int) {
-        val parentDpWidth = (parentPixelWidth / scale + 0.5f).toInt() // Convert pixels to dp
+        val parentDpWidth =
+            (parentPixelWidth / scale + 0.5f).toInt() // Convert pixels to dp
         val cardDpWidth = parentDpWidth / 6 - 8
         val cardPixelWidth = (cardDpWidth * scale + 0.5f).toInt() // Convert dp to pixels
 
@@ -60,21 +62,22 @@ class MainActivityViewModel : ViewModel() {
         totalCardList.shuffle()
     }
 
+
     private fun divideCardToPlayers(playerNum: Int) {
         val cardsNumPerPlayer = 11 - playerNum
+        _playersCardList.value!!.clear()
+        _sharedCardList.value!!.clear()
 
         var start = 0
         var end = cardsNumPerPlayer - 1
-        val playerList = mutableListOf<User>()
         for (i in 0 until playerNum) {
-            playerList.add(User((totalCardList.slice(start..end))))
+            _playersCardList.value!!.add((totalCardList.slice(start..end)))
             start += cardsNumPerPlayer
             end += cardsNumPerPlayer
         }
 
+        _sharedCardList.value!!.addAll(totalCardList.slice(start..totalCardList.lastIndex))
 
-        _playersCardList.value = playerList
-        _sharedCardList.value = totalCardList.slice(start..totalCardList.lastIndex)
     }
 
     private fun getMaxCardNum(playerNum: Int): Int {

@@ -4,10 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import hd.softeer.luckycardgame.databinding.ActivityMainBinding
@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity() {
             binding.rvCardSectionFourth,
             binding.rvCardSectionFifth
         )
-
 
 
         cardSectionTvList = listOf(
@@ -88,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         val playerCardList = viewModel.playersCardList.value!!
         viewModel.playersCardList.observe(this) {
             for (playerNum in playerCardList.indices) {
-                if (playerCardList[playerNum].cardList.isNotEmpty()) {
+                if (playerCardList[playerNum].isNotEmpty()) {
                     cardSectionTvList[playerNum].text = ""
                 } else {
                     cardSectionTvList[playerNum].text = getCardSectionText(playerNum)
@@ -140,7 +139,7 @@ class MainActivity : AppCompatActivity() {
     private fun setCardRecyclerView(playerNum: Int) {
         cardSectionRvList[playerNum].apply {
             val cardAdapter = CardSectionAdapter(
-                viewModel.playersCardList.value!![playerNum].cardList,
+                viewModel.playersCardList.value!![playerNum],
                 viewModel.cardWidth,
                 viewModel.cardHeight,
                 playerNum
@@ -243,7 +242,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
 
     companion object {
         private const val TAG = "Main Activity"
