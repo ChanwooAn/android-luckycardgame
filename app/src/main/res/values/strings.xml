@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">LuckyCardGame</string>
+    <string name="seg_btn_select_num_of_player_text_first">3 명</string>
+    <string name="seg_btn_select_num_of_player_text_second">4 명</string>
+    <string name="seg_btn_select_num_of_player_text_third">5 명</string>
+    <string name="card_section_E_text">E</string>
+    <string name="card_section_D_text">D</string>
+    <string name="card_section_C_text">C</string>
+    <string name="card_section_B_text">B</string>
+    <string name="card_section_A_text">A</string>
+
 </resources>
