@@ -118,14 +118,16 @@ class SharedCardItemDecorator(private val spanCount: Int) : RecyclerView.ItemDec
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        val space=when(spanCount){
-            5->{
+        val space = when (spanCount) {
+            5 -> {
                 40
             }
-            4->{
+
+            4 -> {
                 56
             }
-            else->{
+
+            else -> {
                 12
             }
         }
