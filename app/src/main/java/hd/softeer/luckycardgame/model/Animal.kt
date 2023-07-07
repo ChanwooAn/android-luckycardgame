@@ -1,9 +1,10 @@
 package hd.softeer.luckycardgame.model
 
 enum class Animal(val emoji: String) {
-    Dog("🐶"),
-    Cat("🐱"),
-    Cow("🐮")
+    DOG("\uD83D\uDC36"),
+    CAT("\uD83D\uDC31"),
+    COW("\uD83D\uDC2E")
+
 }
 /*
  animal type은 3개로 국한되므로 예외방지를 위해 sealed class 나 enum class 를 고려할 수 있습니다.
