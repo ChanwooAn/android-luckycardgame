@@ -22,26 +22,27 @@ class MainActivity : AppCompatActivity() {
         printCardList()
     }
 
-    private lateinit var cardList:MutableList<Card>
-    private fun createCardList(){
-        cardList= mutableListOf()
-        for(type in Animal.values()){
-            for(number in 1..12){
+    private lateinit var cardList: MutableList<Card>
+    private fun createCardList() {
+        cardList = mutableListOf()
+        for (type in Animal.values()) {
+            for (number in 1..12) {
                 cardList.add(Card(type, CardNumber(number)))
             }
         }
         cardList.shuffle()
     }
-    private fun printCardList(){
-        val cardListString= mutableListOf<String>()
-        for(card in cardList){
+
+    private fun printCardList() {
+        val cardListString = mutableListOf<String>()
+        for (card in cardList) {
             cardListString.add(card.getCardInfo())
         }
-        Log.d(TAG,cardListString.joinToString(", "))
+        Log.d(TAG, cardListString.joinToString(", "))
     }
 
 
-    companion object{
-        private const val TAG="Main Activity"
+    companion object {
+        private const val TAG = "Main Activity"
     }
 }
