@@ -23,15 +23,15 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by lazy {
         ViewModelProvider(this)[MainActivityViewModel::class.java]
     }
-    private lateinit var card_section_tv_list: List<TextView> //iteration을 위해 각 카드 영역의 textview와 recycler view를 list로 관리.
-    private lateinit var card_section_rv_list: List<RecyclerView>
+    private lateinit var cardSectionTvList: List<TextView> //iteration을 위해 각 카드 영역의 textview와 recycler view를 list로 관리.
+    private lateinit var cardSectionRvList: List<RecyclerView>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        card_section_rv_list = listOf(
+        cardSectionRvList = listOf(
             binding.rvCardSectionA,
             binding.rvCardSectionB,
             binding.rvCardSectionC,
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        card_section_tv_list = listOf(
+        cardSectionTvList = listOf(
             binding.tvCardSectionA,
             binding.tvCardSectionB,
             binding.tvCardSectionC,
@@ -89,9 +89,9 @@ class MainActivity : AppCompatActivity() {
         viewModel.playersCardList.observe(this) {
             for (playerNum in playerCardList.indices) {
                 if (playerCardList[playerNum].cardList.isNotEmpty()) {
-                    card_section_tv_list[playerNum].text = ""
+                    cardSectionTvList[playerNum].text = ""
                 } else {
-                    card_section_tv_list[playerNum].text = getCardSectionText(playerNum)
+                    cardSectionTvList[playerNum].text = getCardSectionText(playerNum)
                 }//card list가 비었을 때만 textView에서 text표시
                 setCardRecyclerView(playerNum)
             }
@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initCardRecyclerView() {
-        card_section_rv_list.forEach {
+        cardSectionRvList.forEach {
             it.layoutManager =
                 LinearLayoutManager(this@MainActivity, RecyclerView.HORIZONTAL, false)
             it.addItemDecoration(PlayerCardItemDecorator(viewModel.cardWidth))
@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
     }//player의 카드영역은 player의 수에 따라 바뀌는게 없으므로 따로 빼주어 최초 한 번만 layoutmanager와 item decorator 를 설정한다.
 
     private fun setCardRecyclerView(playerNum: Int) {
-        card_section_rv_list[playerNum].apply {
+        cardSectionRvList[playerNum].apply {
             val cardAdapter = CardSectionAdapter(
                 viewModel.playersCardList.value!![playerNum].cardList,
                 viewModel.cardWidth,
@@ -194,31 +194,31 @@ class MainActivity : AppCompatActivity() {
         when (playerNum) {
             3 -> {
                 for (i in 0 until 3) {
-                    card_section_rv_list[i].visibility = View.VISIBLE
-                    card_section_tv_list[i].visibility = View.VISIBLE
+                    cardSectionRvList[i].visibility = View.VISIBLE
+                    cardSectionTvList[i].visibility = View.VISIBLE
                 }
 
-                card_section_tv_list[3].visibility = View.INVISIBLE
-                card_section_rv_list[3].visibility = View.INVISIBLE
+                cardSectionTvList[3].visibility = View.INVISIBLE
+                cardSectionRvList[3].visibility = View.INVISIBLE
 
-                card_section_tv_list[4].visibility = View.GONE
-                card_section_rv_list[4].visibility = View.GONE
+                cardSectionTvList[4].visibility = View.GONE
+                cardSectionRvList[4].visibility = View.GONE
             }
 
             4 -> {
                 for (i in 0 until 4) {
-                    card_section_rv_list[i].visibility = View.VISIBLE
-                    card_section_tv_list[i].visibility = View.VISIBLE
+                    cardSectionRvList[i].visibility = View.VISIBLE
+                    cardSectionTvList[i].visibility = View.VISIBLE
                 }
-                card_section_tv_list[4].visibility = View.GONE
-                card_section_rv_list[4].visibility = View.GONE
+                cardSectionTvList[4].visibility = View.GONE
+                cardSectionRvList[4].visibility = View.GONE
             }
 
             5 -> {
-                card_section_rv_list.forEach {
+                cardSectionRvList.forEach {
                     it.visibility = View.VISIBLE
                 }
-                card_section_tv_list.forEach {
+                cardSectionTvList.forEach {
                     it.visibility = View.VISIBLE
                 }
             }
