@@ -11,11 +11,11 @@ import hd.softeer.luckycardgame.model.User
 class MainActivityViewModel : ViewModel() {
     private val totalCardList: MutableList<Card> = mutableListOf()
 
-    private val _playersCardList = MutableLiveData<MutableList<User>>()
-    val playersCardList: LiveData<MutableList<User>> get() = _playersCardList
+    private val _playersCardList = MutableLiveData<List<User>>()
+    val playersCardList: LiveData<List<User>> get() = _playersCardList
 
-    private val _sharedCardList = MutableLiveData<MutableList<Card>>()
-    val sharedCardList: LiveData<MutableList<Card>> get() = _sharedCardList
+    private val _sharedCardList = MutableLiveData<List<Card>>()
+    val sharedCardList: LiveData<List<Card>> get() = _sharedCardList
 
 
     private var _cardWidth = 0
@@ -62,19 +62,19 @@ class MainActivityViewModel : ViewModel() {
 
     private fun divideCardToPlayers(playerNum: Int) {
         val cardsNumPerPlayer = 11 - playerNum
-        _playersCardList.value!!.clear()
-        _sharedCardList.value!!.clear()
 
         var start = 0
         var end = cardsNumPerPlayer - 1
+        val playerList = mutableListOf<User>()
         for (i in 0 until playerNum) {
-            _playersCardList.value!!.add(User((totalCardList.slice(start..end))))
+            playerList.add(User((totalCardList.slice(start..end))))
             start += cardsNumPerPlayer
             end += cardsNumPerPlayer
         }
 
-        _sharedCardList.value!!.addAll(totalCardList.slice(start..totalCardList.lastIndex))
 
+        _playersCardList.value = playerList
+        _sharedCardList.value = totalCardList.slice(start..totalCardList.lastIndex)
     }
 
     private fun getMaxCardNum(playerNum: Int): Int {
