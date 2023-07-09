@@ -47,35 +47,25 @@
         app:selectionRequired="true"
         app:singleSelection="true">
 
+        <!-- layout.xml -->
         <Button
             android:id="@+id/bt_player_three"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/seg_btn_select_num_of_player_text_first"
-            android:textAlignment="textStart"
-            app:icon="@drawable/seg_btn_select_num_of_player_background" />
+            style="@style/PlayerNumSegmentedButtonStyle"
+            app:icon="@drawable/seg_btn_select_num_of_player_background"
+            android:text="@string/seg_btn_select_num_of_player_text_first" />
 
         <Button
             android:id="@+id/bt_player_four"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/seg_btn_select_num_of_player_text_second"
-            android:textAlignment="textStart"
-            app:icon="@drawable/seg_btn_select_num_of_player_background" />
+            style="@style/PlayerNumSegmentedButtonStyle"
+            app:icon="@drawable/seg_btn_select_num_of_player_background"
+            android:text="@string/seg_btn_select_num_of_player_text_second" />
 
         <Button
             android:id="@+id/bt_player_five"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/seg_btn_select_num_of_player_text_third"
-            android:textAlignment="textStart"
-            app:icon="@drawable/seg_btn_select_num_of_player_background" />
+            style="@style/PlayerNumSegmentedButtonStyle"
+            app:icon="@drawable/seg_btn_select_num_of_player_background"
+            android:text="@string/seg_btn_select_num_of_player_text_third" />
+
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <TextView
