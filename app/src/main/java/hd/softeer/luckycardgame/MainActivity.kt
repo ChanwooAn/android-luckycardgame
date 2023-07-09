@@ -32,21 +32,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         cardSectionRvList = listOf(
-            binding.rvCardSectionA,
-            binding.rvCardSectionB,
-            binding.rvCardSectionC,
-            binding.rvCardSectionD,
-            binding.rvCardSectionE
+            binding.rvCardSectionFirst,
+            binding.rvCardSectionSecond,
+            binding.rvCardSectionThird,
+            binding.rvCardSectionFourth,
+            binding.rvCardSectionFifth
         )
 
 
 
         cardSectionTvList = listOf(
-            binding.tvCardSectionA,
-            binding.tvCardSectionB,
-            binding.tvCardSectionC,
-            binding.tvCardSectionD,
-            binding.tvCardSectionE
+            binding.tvCardSectionFirst,
+            binding.tvCardSectionSecond,
+            binding.tvCardSectionThird,
+            binding.tvCardSectionFourth,
+            binding.tvCardSectionFifth
         )
 
         observeCardSize()
@@ -230,16 +230,16 @@ class MainActivity : AppCompatActivity() {
      * card가 담기는 영역의 크기인 textView의 size를 관찰하여 적절하게 카드 size가 설정될 수 있도록 한다.
      */
     private fun observeCardSize() {
-        binding.tvCardSectionA.viewTreeObserver.addOnGlobalLayoutListener(object :
+        binding.tvCardSectionFirst.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 val scale = resources.displayMetrics.density // Get the screen density scale
-                viewModel.setCardWidth(scale, binding.tvCardSectionA.width)
-                viewModel.setCardHeight(scale, binding.tvCardSectionA.height)
+                viewModel.setCardWidth(scale, binding.tvCardSectionFirst.width)
+                viewModel.setCardHeight(scale, binding.tvCardSectionFirst.height)
 
                 initCardRecyclerView()
 
-                binding.tvCardSectionA.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding.tvCardSectionFirst.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
     }

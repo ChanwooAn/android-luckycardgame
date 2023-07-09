@@ -51,25 +51,25 @@
         <Button
             android:id="@+id/bt_player_three"
             style="@style/PlayerNumSegmentedButtonStyle"
-            app:icon="@drawable/seg_btn_select_num_of_player_background"
-            android:text="@string/seg_btn_select_num_of_player_text_first" />
+            android:text="@string/seg_btn_select_num_of_player_text_first"
+            app:icon="@drawable/seg_btn_select_num_of_player_background" />
 
         <Button
             android:id="@+id/bt_player_four"
             style="@style/PlayerNumSegmentedButtonStyle"
-            app:icon="@drawable/seg_btn_select_num_of_player_background"
-            android:text="@string/seg_btn_select_num_of_player_text_second" />
+            android:text="@string/seg_btn_select_num_of_player_text_second"
+            app:icon="@drawable/seg_btn_select_num_of_player_background" />
 
         <Button
             android:id="@+id/bt_player_five"
             style="@style/PlayerNumSegmentedButtonStyle"
-            app:icon="@drawable/seg_btn_select_num_of_player_background"
-            android:text="@string/seg_btn_select_num_of_player_text_third" />
+            android:text="@string/seg_btn_select_num_of_player_text_third"
+            app:icon="@drawable/seg_btn_select_num_of_player_background" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
     <TextView
-        android:id="@+id/tv_card_section_a"
+        android:id="@+id/tv_card_section_first"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
@@ -87,12 +87,12 @@
         app:layout_constraintTop_toBottomOf="@id/segbtn_select_num_of_player" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_card_section_a"
+        android:id="@+id/rv_card_section_first"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:background="@drawable/card_section_background"
-        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_a"
+        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_first"
         app:layout_constraintEnd_toEndOf="@id/end_constraint"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
@@ -101,7 +101,7 @@
 
 
     <TextView
-        android:id="@+id/tv_card_section_b"
+        android:id="@+id/tv_card_section_second"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
@@ -116,23 +116,23 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/tv_card_section_a" />
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_first" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_card_section_b"
+        android:id="@+id/rv_card_section_second"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:background="@drawable/card_section_background"
-        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_b"
+        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_second"
         app:layout_constraintEnd_toEndOf="@id/end_constraint"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/tv_card_section_a" />
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_first" />
 
     <TextView
-        android:id="@+id/tv_card_section_c"
+        android:id="@+id/tv_card_section_third"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
@@ -147,24 +147,24 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/tv_card_section_b" />
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_second" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_card_section_c"
+        android:id="@+id/rv_card_section_third"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:background="@drawable/card_section_background"
-        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_c"
+        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_third"
         app:layout_constraintEnd_toEndOf="@id/end_constraint"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/tv_card_section_b" />
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_second" />
 
 
     <TextView
-        android:id="@+id/tv_card_section_d"
+        android:id="@+id/tv_card_section_fourth"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
@@ -179,23 +179,23 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/tv_card_section_c" />
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_third" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_card_section_d"
+        android:id="@+id/rv_card_section_fourth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:background="@drawable/card_section_background"
-        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_d"
+        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_fourth"
         app:layout_constraintEnd_toEndOf="@id/end_constraint"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/tv_card_section_c" />
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_third" />
 
     <TextView
-        android:id="@+id/tv_card_section_e"
+        android:id="@+id/tv_card_section_fifth"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
@@ -210,20 +210,20 @@
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/tv_card_section_d" />
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_fourth" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_card_section_e"
+        android:id="@+id/rv_card_section_fifth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:background="@drawable/card_section_background"
-        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_e"
+        app:layout_constraintBottom_toBottomOf="@id/tv_card_section_fifth"
         app:layout_constraintEnd_toEndOf="@id/end_constraint"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.12"
         app:layout_constraintStart_toStartOf="@id/start_constraint"
-        app:layout_constraintTop_toBottomOf="@id/tv_card_section_d" />
+        app:layout_constraintTop_toBottomOf="@id/tv_card_section_fourth" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/bottom_section_barrier"
@@ -231,7 +231,7 @@
         android:layout_height="wrap_content"
         app:barrierAllowsGoneWidgets="false"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="tv_card_section_d,tv_card_section_e" />
+        app:constraint_referenced_ids="tv_card_section_fourth,tv_card_section_fifth" />
 
 
     <View
