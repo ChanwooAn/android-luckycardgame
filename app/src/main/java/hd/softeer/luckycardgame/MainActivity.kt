@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cardSectionTvList: List<TextView> //iteration을 위해 각 카드 영역의 textview와 recycler view를 list로 관리.
     private lateinit var cardSectionRvList: List<RecyclerView>
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -56,17 +57,17 @@ class MainActivity : AppCompatActivity() {
             removeCardListObserver()
             when (checkedId) {
                 R.id.bt_player_three -> {
-                    viewModel.initCardList(3)
+                    viewModel.startGame(3)
                     initViewByPlayerNum(3)
                 }
 
                 R.id.bt_player_four -> {
-                    viewModel.initCardList(4)
+                    viewModel.startGame(4)
                     initViewByPlayerNum(4)
                 }
 
                 R.id.bt_player_five -> {
-                    viewModel.initCardList(5)
+                    viewModel.startGame(5)
                     initViewByPlayerNum(5)
                 }
             }
@@ -74,19 +75,19 @@ class MainActivity : AppCompatActivity() {
         }//각 버튼에 맞는 인원수를 viewmodel에 전달하여 카드 list를 적절히 초기화하고, observe하여 view를 update한다.
     }
 
-
     private fun removeCardListObserver() {
         viewModel.playersCardList.removeObservers(this)
     }
 
     private fun observeCardList() {
-        val playerCardList = viewModel.playersCardList.value!!
-        viewModel.playersCardList.observe(this) {
+        val playerCardList = viewModel.playersList.value!!
+        viewModel.playersList.observe(this) {
             for (playerNum in playerCardList.indices) {
                 if (playerCardList[playerNum].cardList.isNotEmpty()) {
                     cardSectionTvList[playerNum].text = ""
                 } else {
-                    cardSectionTvList[playerNum].text = getCardSectionText(playerNum)
+                    cardSectionTvList[playerNum].text =
+                        getCardSectionText(playerNum)
                 }//card list가 비었을 때만 textView에서 text표시
                 setCardRecyclerView(playerNum)
             }
@@ -127,7 +128,11 @@ class MainActivity : AppCompatActivity() {
     private fun initCardRecyclerView() {
         cardSectionRvList.forEach {
             it.layoutManager =
-                LinearLayoutManager(this@MainActivity, RecyclerView.HORIZONTAL, false)
+                LinearLayoutManager(
+                    this@MainActivity,
+                    RecyclerView.HORIZONTAL,
+                    false
+                )
             it.addItemDecoration(PlayerCardItemDecorator(viewModel.cardWidth))
         }
     }//player의 카드영역은 player의 수에 따라 바뀌는게 없으므로 따로 빼주어 최초 한 번만 layoutmanager와 item decorator 를 설정한다.
@@ -135,17 +140,55 @@ class MainActivity : AppCompatActivity() {
     private fun setCardRecyclerView(playerNum: Int) {
         with(cardSectionRvList[playerNum]) {
             val cardAdapter = CardSectionAdapter(
-                viewModel.playersCardList.value!![playerNum].cardList,
+                viewModel.playersList.value!![playerNum].cardList,
                 viewModel.cardWidth,
                 viewModel.cardHeight,
                 playerNum
             )
             adapter = cardAdapter
-            layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(
+                this@MainActivity,
+                RecyclerView.HORIZONTAL,
+                false
+            )
         }
 
     }
 
+
+    private fun setSharedCardRecyclerView(playerNum: Int) {
+        val gridSpan = when (playerNum) {
+            4 -> {
+                4
+            }
+
+            5 -> {
+                6
+            }
+
+            else -> {
+                5
+            }
+        }
+
+        binding.rvCardShared.apply {
+            val cardAdapter = CardSectionAdapter(
+                viewModel.sharedCardList.value!!,
+                viewModel.cardWidth,
+                viewModel.cardHeight,
+                3
+            )
+            adapter = cardAdapter
+            layoutManager = GridLayoutManager(this@MainActivity, gridSpan)
+            for (i in 0 until itemDecorationCount) {
+                val decoration = getItemDecorationAt(i)
+                if (decoration is SharedCardItemDecorator) {
+                    removeItemDecoration(decoration)
+                }
+            }
+            addItemDecoration(SharedCardItemDecorator(gridSpan))
+        }
+    }
 
     /**
      * 인원 수에 맞게 card 영역의 visibility를 적절히 초기화한다.
@@ -163,7 +206,9 @@ class MainActivity : AppCompatActivity() {
 
                 cardSectionTvList[4].visibility = View.GONE
                 cardSectionRvList[4].visibility = View.GONE
+
             }
+
 
             4 -> {
                 for (i in 0 until 4) {
@@ -182,56 +227,37 @@ class MainActivity : AppCompatActivity() {
                     it.visibility = View.VISIBLE
                 }
             }
+
         }
     }
 
-    private fun setSharedCardRecyclerView(playerNum: Int) {
-        val gridSpan = when (playerNum) {
-            4 -> {
-                4
-            }
-
-            5 -> {
-                6
-            }
-
-            else -> {
-                5
-            }
-        }
-
-        with(binding.rvCardShared) {
-            val cardAdapter = CardSectionAdapter(
-                viewModel.sharedCardList.value!!, viewModel.cardWidth, viewModel.cardHeight, 3
-            )
-            adapter = cardAdapter
-            layoutManager = GridLayoutManager(this@MainActivity, gridSpan)
-            for (i in 0 until itemDecorationCount) {
-                val decoration = getItemDecorationAt(i)
-                if (decoration is SharedCardItemDecorator) {
-                    removeItemDecoration(decoration)
-                }
-            }
-            addItemDecoration(SharedCardItemDecorator(gridSpan))
-        }
-    }
 
     /**
      * card가 담기는 영역의 크기인 textView의 size를 관찰하여 적절하게 카드 size가 설정될 수 있도록 한다.
      */
     private fun observeCardSize() {
-        binding.tvCardSectionFirst.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                val scale = resources.displayMetrics.density // Get the screen density scale
-                viewModel.setCardWidth(scale, binding.tvCardSectionFirst.width)
-                viewModel.setCardHeight(scale, binding.tvCardSectionFirst.height)
+        binding.tvCardSectionFirst.viewTreeObserver.addOnGlobalLayoutListener(
+            object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val scale =
+                        resources.displayMetrics.density // Get the screen density scale
+                    viewModel.setCardWidth(
+                        scale,
+                        binding.tvCardSectionFirst.width
+                    )
+                    viewModel.setCardHeight(
+                        scale,
+                        binding.tvCardSectionFirst.height
+                    )
 
-                initCardRecyclerView()
+                    initCardRecyclerView()
 
-                binding.tvCardSectionFirst.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
+                    binding.tvCardSectionFirst.viewTreeObserver.removeOnGlobalLayoutListener(
+                        this
+                    )
+                }
+            })
     }
 
     companion object {
