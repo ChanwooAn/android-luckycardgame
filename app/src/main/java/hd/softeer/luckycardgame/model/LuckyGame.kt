@@ -1,5 +1,7 @@
 package hd.softeer.luckycardgame.model
 
+import kotlin.math.absoluteValue
+
 
 class LuckyGame {
 
@@ -56,6 +58,138 @@ class LuckyGame {
         return cardList.sortBy { it.number.num }
     }
 
+    private fun checkWinners() {
+        for (player in gameInfo.users.indices) {
+            if (gameInfo.users[player].acquiredCardList.contains(7)) {
+                gameInfo.winners.add(player)
+            }
+        }
+
+        for (player1 in gameInfo.users.indices) {
+            if (gameInfo.users[player1].acquiredCardList.isEmpty()) {
+                continue
+            }
+            for (player2 in gameInfo.users.indices) {
+                if (player1 == player2) {
+                    continue
+                }
+                if (gameInfo.users[player2].acquiredCardList.isEmpty()) {
+                    continue
+                }
+                if (canMakeSeven(player1, player2)) {
+                    gameInfo.winners.addAll(listOf(player1, player2))
+                }
+            }
+        }
+
+    }
+
+    private fun canMakeSeven(player1: Int, player2: Int): Boolean {
+        for (card1 in gameInfo.users[player1].acquiredCardList) {
+            for (card2 in gameInfo.users[player2].acquiredCardList) {
+                if (card1 + card2 == 7) {
+                    return true
+                }
+                if ((card1 - card2).absoluteValue == 7) {
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
+    fun updateGameInfo(position: Int, userId: Int) {
+        val targetUser = gameInfo.users[userId]
+
+        with(targetUser) {
+            cardList[position].state = CardState.CARD_OPEN
+            turningCount++
+            if (checkTriple(position, userId)) {
+                acquiredCardList.add(cardList[position].number.num)
+                checkWinners()//승자 체크해서 플레이어 넘버를 추가시켜서 관리하고,
+            }
+        }
+
+        if (isTurnEnd()) {
+            initiateTurnCnt()
+        }
+    }
+
+
+    private fun isTurnEnd(): Boolean {
+        for (user in gameInfo.users) {
+            if (user.turningCount < 3) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    private fun initiateTurnCnt() {
+        for (user in gameInfo.users) {
+            user.turningCount = 0
+        }
+    }
+
+    /**
+     * winner가 존재하면 true를 return
+     */
+    private fun getWinnerState(): Boolean {
+        return gameInfo.winners.isNotEmpty()
+    }
+
+    /**
+     * winner가 존재하고, 모든 플레이어가 턴을 마무리 했을 때 true를 return
+     */
+    fun getEndState(): Boolean {
+        val isAllPlayerEnd = gameInfo.users.find { it.turningCount != 3 }
+        return getWinnerState() && isAllPlayerEnd == null
+    }
+
+    fun getWinnersNumber(): List<Int> {
+        return gameInfo.winners
+    }
+
+    fun isTurnCountLeft(userId: Int): Boolean {
+        return gameInfo.users[userId].turningCount < 3
+    }
+
+    private fun checkTriple(cardPosition: Int, userId: Int): Boolean {
+        val userCardList = gameInfo.users[userId].cardList
+        val tripleCase = listOf(
+            listOf(cardPosition - 1, cardPosition, cardPosition + 1),
+            listOf(cardPosition - 2, cardPosition - 1, cardPosition),
+            listOf(cardPosition, cardPosition + 1, cardPosition + 2)
+        )
+        var isSame = false
+
+        fun isPositionValidate(cardPosition: Int): Boolean {
+            if (cardPosition < 0 || cardPosition > userCardList.size - 1) {
+                return false
+            }
+
+            if (userCardList[cardPosition].state != CardState.CARD_OPEN) {
+                return false
+            }
+
+            return true
+        }
+
+        for ((first, second, third) in tripleCase) {
+            if (isPositionValidate(first) && isPositionValidate(second) && isPositionValidate(third) && isCardsSame(
+                    userCardList[first],
+                    userCardList[second],
+                    userCardList[third]
+                )
+            ) {
+                isSame = true
+            }
+        }
+
+        return isSame
+    }
 
 
 }
