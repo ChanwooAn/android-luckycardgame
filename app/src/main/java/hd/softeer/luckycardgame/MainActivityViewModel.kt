@@ -24,10 +24,14 @@ class MainActivityViewModel : ViewModel() {
     private var _cardHeight = 0
     val cardHeight get() = _cardHeight
 
+    private val _endFlg = MutableLiveData<Boolean>()
+    val endFlg: LiveData<Boolean> get() = _endFlg
+
 
     init {
         _playersList.value = mutableListOf()
         _sharedCardList.value = mutableListOf()
+        _endFlg.value = false
     }
 
     fun setCardWidth(scale: Float, parentPixelWidth: Int) {
@@ -54,10 +58,15 @@ class MainActivityViewModel : ViewModel() {
 
     fun updateCardState(position: Int, userId: Int) {
         gameManager.updateGameInfo(position, userId)
+        _endFlg.value = gameManager.getEndState()
     }
 
     fun isTurnCountLeft(userId: Int): Boolean {
         return gameManager.isTurnCountLeft(userId)
+    }
+
+    fun getWinnersNumber(): List<Int> {
+        return gameManager.getWinnersNumber()
     }
 
 

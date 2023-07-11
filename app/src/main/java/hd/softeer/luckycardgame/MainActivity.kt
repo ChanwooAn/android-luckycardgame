@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         observeCardSize()
+        observeGameEndState()
         setPlayerNumberButtonListener()
 
     }
@@ -106,6 +107,14 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.sharedCardList.observe(this) {
             setSharedCardRecyclerView(playerCardList.size)
+        }
+    }
+
+    private fun observeGameEndState() {
+        viewModel.endFlg.observe(this) {
+            if (it) {
+                Log.d(TAG, "Game Ended winners:${viewModel.getWinnersNumber().joinToString(" ")}")
+            }
         }
     }
 
