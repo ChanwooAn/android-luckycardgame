@@ -24,6 +24,13 @@ class MainActivity : AppCompatActivity() {
         ViewModelProvider(this)[MainActivityViewModel::class.java]
     }
 
+    private val onCardClickedInfoUpdateCallback = { position: Int, userId: Int ->
+        viewModel.updateCardState(position, userId)
+    }
+    private val isTurnCountLeft = { userId: Int ->
+        viewModel.isTurnCountLeft(userId)
+    }
+
     private lateinit var card_section_tv_list: List<TextView> //iteration을 위해 각 카드 영역의 textview와 recycler view를 list로 관리.
     private lateinit var card_section_rv_list: List<RecyclerView>
 
@@ -102,6 +109,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun getCardSectionText(playerNum: Int): String {
         return when (playerNum) {
             0 -> {
@@ -141,10 +149,12 @@ class MainActivity : AppCompatActivity() {
     private fun setCardRecyclerView(playerNum: Int) {
         card_section_rv_list[playerNum].apply {
             val cardAdapter = CardSectionAdapter(
+                playerNum,
                 viewModel.playersList.value!![playerNum].cardList,
                 viewModel.cardWidth,
                 viewModel.cardHeight,
-                playerNum
+                onCardClickedInfoUpdateCallback,
+                isTurnCountLeft
             )
             adapter = cardAdapter
             layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.HORIZONTAL, false)
@@ -169,10 +179,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.rvCardShared.apply {
             val cardAdapter = CardSectionAdapter(
+                SHARED_CARD_SECTION_ID,
                 viewModel.sharedCardList.value!!,
                 viewModel.cardWidth,
                 viewModel.cardHeight,
-                3
+                onCardClickedInfoUpdateCallback,
+                isTurnCountLeft
             )
             adapter = cardAdapter
             layoutManager = GridLayoutManager(this@MainActivity, gridSpan)
@@ -246,6 +258,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "Main Activity"
-
+        private const val SHARED_CARD_SECTION_ID = 1000
     }
+
+
 }

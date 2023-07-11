@@ -3,10 +3,8 @@ package hd.softeer.luckycardgame
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import hd.softeer.luckycardgame.model.Animal
 import hd.softeer.luckycardgame.model.Card
-import hd.softeer.luckycardgame.model.CardNumber
-import hd.softeer.luckycardgame.model.GameInfo
+import hd.softeer.luckycardgame.model.LuckyGame
 import hd.softeer.luckycardgame.model.User
 
 class MainActivityViewModel : ViewModel() {
@@ -25,6 +23,7 @@ class MainActivityViewModel : ViewModel() {
 
     private var _cardHeight = 0
     val cardHeight get() = _cardHeight
+
 
     init {
         _playersList.value = mutableListOf()
@@ -52,5 +51,14 @@ class MainActivityViewModel : ViewModel() {
         _playersList.value = gameManager.getPlayersCardInfo()
         _sharedCardList.value = gameManager.getSharedCardInfo()
     }
+
+    fun updateCardState(position: Int, userId: Int) {
+        gameManager.updateGameInfo(position, userId)
+    }
+
+    fun isTurnCountLeft(userId: Int): Boolean {
+        return gameManager.isTurnCountLeft(userId)
+    }
+
 
 }

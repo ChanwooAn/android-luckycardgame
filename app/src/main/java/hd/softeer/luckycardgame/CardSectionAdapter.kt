@@ -1,5 +1,6 @@
 package hd.softeer.luckycardgame
 
+import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,20 +11,32 @@ import androidx.viewbinding.ViewBinding
 import hd.softeer.luckycardgame.databinding.RvItemCardBackBinding
 import hd.softeer.luckycardgame.databinding.RvItemCardFrontBinding
 import hd.softeer.luckycardgame.model.Card
+import hd.softeer.luckycardgame.model.CardState
 
 class CardSectionAdapter(
+    private val userId: Int,
     private val cardList: List<Card>,
     private val cardWidth: Int,
     private val cardHeight: Int,
-    private val playerNum: Int
+    private val onCardClickedInfoUpdateCallback: (position: Int, userId: Int) -> Unit,
+    private val isTurnCountLeft: (userId: Int) -> Boolean
 ) :
     RecyclerView.Adapter<CardViewHolder>() {
+
+    @SuppressLint("NotifyDataSetChanged")
+    private val onCardClicked = { position: Int ->
+        if (isCardOpenAvailable(position)) {
+            onCardClickedInfoUpdateCallback(position, userId)
+            this.notifyDataSetChanged()
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
         val binding =
             when (viewType) {
-                0 -> {
+                CARD_STATE_FRONT -> {
                     RvItemCardFrontBinding.inflate(inflater, parent, false)
                 }
 
@@ -38,9 +51,8 @@ class CardSectionAdapter(
 
 
         binding.root.layoutParams = layoutParams
-        Log.d("onCreateViewHolder", binding.root.toString())
-        return if (viewType == 0) CardFrontViewHolder(binding as RvItemCardFrontBinding) else CardBackViewHolder(
-            binding as RvItemCardBackBinding
+        return if (viewType == CARD_STATE_FRONT) CardFrontViewHolder(binding as RvItemCardFrontBinding) else CardBackViewHolder(
+            binding as RvItemCardBackBinding, onCardClicked
         )
     }
 
@@ -49,38 +61,61 @@ class CardSectionAdapter(
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        holder.bind(cardList[position])
+        holder.bind(cardList[position], position)
     }
 
     override fun getItemViewType(position: Int): Int {
-        return playerNum
+        return if (cardList[position].state == CardState.CARD_OPEN) {
+            CARD_STATE_FRONT
+        } else {
+            CARD_STATE_BACK
+        }
     }
 
+    private fun isCardOpenAvailable(position: Int): Boolean {
+        val positionAvailability =
+            (position - 1 >= 0 && cardList[position - 1].state == CardState.CARD_OPEN) ||
+                    (position + 1 < cardList.size && cardList[position + 1].state == CardState.CARD_OPEN) ||
+                    (position == 0 || position == cardList.size - 1)
+
+        return userId < 100 && isTurnCountLeft(userId) && positionAvailability
+        //user가 뒤집을 수 있는 횟수가 남았는지 && 가장 앞이나 뒷쪽인지 && user영역의 카드인지, shared영역인지
+    }
+
+    companion object {
+        private const val CARD_STATE_FRONT = 100
+        private const val CARD_STATE_BACK = 200
+    }
 
 }
 
 abstract class CardViewHolder(
     binding: ViewBinding
 ) : RecyclerView.ViewHolder(binding.root) {
-    abstract fun bind(item: Card)
+    abstract fun bind(item: Card, position: Int)
 }
 
-class CardBackViewHolder(private val binding: RvItemCardBackBinding) :
+class CardBackViewHolder(
+    binding: RvItemCardBackBinding,
+    private val onCardClicked: (position: Int) -> Unit
+) :
     CardViewHolder(binding) {
-    override fun bind(card: Card) {
-
+    override fun bind(item: Card, position: Int) {
+        itemView.setOnClickListener {
+            onCardClicked(position)
+        }
     }
+
 }
 
 class CardFrontViewHolder(private val binding: RvItemCardFrontBinding) :
     CardViewHolder(binding) {
-    override fun bind(card: Card) {
+    override fun bind(item: Card, position: Int) {
         binding.apply {
-            tvAnimalUnicode.text = card.type.emoji
-            tvCardNumberTopLeft.text = card.number.num.toString()
-            tvCardNumberBottomRight.text = card.number.num.toString()
+            tvAnimalUnicode.text = item.type.emoji
+            tvCardNumberTopLeft.text = item.number.num.toString()
+            tvCardNumberBottomRight.text = item.number.num.toString()
         }
-        Log.d("onBind", card.toString())
     }
 }
 
@@ -118,14 +153,16 @@ class SharedCardItemDecorator(private val spanCount: Int) : RecyclerView.ItemDec
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        val space=when(spanCount){
-            5->{
+        val space = when (spanCount) {
+            5 -> {
                 40
             }
-            4->{
+
+            4 -> {
                 56
             }
-            else->{
+
+            else -> {
                 12
             }
         }
