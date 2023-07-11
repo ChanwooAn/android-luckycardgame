@@ -1,10 +1,5 @@
-package hd.softeer.luckycardgame
+package hd.softeer.luckycardgame.model
 
-import hd.softeer.luckycardgame.model.Animal
-import hd.softeer.luckycardgame.model.Card
-import hd.softeer.luckycardgame.model.CardNumber
-import hd.softeer.luckycardgame.model.GameInfo
-import hd.softeer.luckycardgame.model.User
 
 class LuckyGame {
 
@@ -30,7 +25,7 @@ class LuckyGame {
         val cardMaxNumber = if (playerNum == 3) 11 else 12
         for (type in Animal.values()) {
             for (number in 1..cardMaxNumber) {
-                totalCardList.add(Card(type, CardNumber(number)))
+                totalCardList.add(Card(type, CardNumber(number), CardState.CARD_CLOSE))
             }
         }
         totalCardList.shuffle()
@@ -38,22 +33,29 @@ class LuckyGame {
         val cardsNumPerPlayer = 11 - playerNum
         var start = 0
         var end = cardsNumPerPlayer - 1
-        val cardLists = mutableListOf<List<Card>>()
+        val cardLists = mutableListOf<MutableList<Card>>()
         for (i in 0 until playerNum) {
-            cardLists.add((totalCardList.slice(start..end)))
+            cardLists.add((totalCardList.slice(start..end)).toMutableList())
             start += cardsNumPerPlayer
             end += cardsNumPerPlayer
         }
+
+        for (cardList in cardLists) {
+            sortCardAsc(cardList)
+        }
+
         gameInfo =
             GameInfo.initGameInfo(cardLists, totalCardList.slice(start..totalCardList.lastIndex))
     }
 
-    fun checkLucky(card1: Card, card2: Card, card3: Card): Boolean {
+    private fun isCardsSame(card1: Card, card2: Card, card3: Card): Boolean {
         return card1.number.num == card2.number.num && card2.number.num == card3.number.num
     }
 
-    fun sortCardAsc(cardList: MutableList<Card>) {
+    private fun sortCardAsc(cardList: MutableList<Card>) {
         return cardList.sortBy { it.number.num }
     }
+
+
 
 }
