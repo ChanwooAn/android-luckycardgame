@@ -6,11 +6,10 @@ import android.view.ViewTreeObserver
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import hd.softeer.luckycardgame.adapter.CardSectionAdapter
-import hd.softeer.luckycardgame.adapter.decorator.PlayerCardItemDecorator
+import hd.softeer.luckycardgame.adapter.ResultCardsAdapter
 import hd.softeer.luckycardgame.adapter.decorator.ResultCardDecorator
 import hd.softeer.luckycardgame.databinding.ActivityGameResultBinding
+import hd.softeer.luckycardgame.model.WinnersInfo
 
 class GameResultActivity : AppCompatActivity() {
 
@@ -32,14 +31,18 @@ class GameResultActivity : AppCompatActivity() {
             binding.rvCardSectionD,
             binding.rvCardSectionE
         )
+        //winners랑 winners가 가지고 있는 acquire card number를 받아야 함.
+        //card number를 받아 3가지 카드로 구성할 것.
 
         observeCardSize()
-
+        val winnersInfo=intent.getParcelableArrayListExtra<WinnersInfo>(WINNERS_NUMBER)
+        updateWinnersInfo(winnersInfo?:listOf<WinnersInfo>().toList())
+        observeCardList()
+    }
+    private fun updateWinnersInfo(winnersInfo:List<WinnersInfo>){
+        viewModel.updateWinnersInfo(winnersInfo)
     }
 
-    /**
-     * card가 담기는 영역의 크기인 textView의 size를 관찰하여 적절하게 카드 size가 설정될 수 있도록 한다.
-     */
     private fun observeCardSize() {
         binding.tvCardSectionA.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
@@ -49,10 +52,16 @@ class GameResultActivity : AppCompatActivity() {
                 viewModel.setCardHeight(scale, binding.tvCardSectionA.height)
 
                 initCardRecyclerView()
-
+                observeCardList()
                 binding.tvCardSectionA.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
+    }
+
+    private fun observeCardList() {
+        viewModel.playersList.observe(this) {
+            setCardRecyclerView()
+        }
     }
 
     private fun initCardRecyclerView() {
@@ -63,20 +72,20 @@ class GameResultActivity : AppCompatActivity() {
         }
     }
 
-    private fun setCardRecyclerView(playerNum: Int) {
-        card_section_rv_list[playerNum].apply {
-            val cardAdapter = CardSectionAdapter(
-                playerNum,
-                viewModel.playersList.value!![playerNum].cardList,
+    private fun setCardRecyclerView() {
+        card_section_rv_list.forEachIndexed { idx, recyclerView ->
+            val cardAdapter = ResultCardsAdapter(
+                viewModel.playersList.value!![idx],
                 viewModel.cardWidth,
-                viewModel.cardHeight,
-                onUserCardClickedInfoUpdateCallback,
-                isTurnCountLeft
+                viewModel.cardHeight
             )
-            adapter = cardAdapter
-            layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.HORIZONTAL, false)
+            recyclerView.adapter = cardAdapter
         }
 
+    }
+
+    companion object {
+        private const val WINNERS_NUMBER="winners number"
     }
 
 }

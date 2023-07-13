@@ -15,7 +15,7 @@ import hd.softeer.luckycardgame.model.card.Card
 import hd.softeer.luckycardgame.model.card.CardState
 import hd.softeer.luckycardgame.model.state.CardKind
 
-class CardSectionAdapter(
+class PlayerCardsAdapter(
     private val userId: Int,
     private val cardList: List<Card>,
     private val cardWidth: Int,

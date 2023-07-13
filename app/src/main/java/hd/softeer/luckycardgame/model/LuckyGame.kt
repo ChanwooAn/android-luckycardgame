@@ -208,8 +208,10 @@ class LuckyGame {
     }
 
 
-    fun getWinnersNumber(): List<Int> {
-        return gameInfo.winners
+    fun getWinnersInfo():List<WinnersInfo>{
+        return gameInfo.winners.map {
+            WinnersInfo(it,gameInfo.users[it].acquiredCardList.toIntArray())
+        }
     }
 
     fun isTurnCountLeft(userId: Int): Boolean {

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import hd.softeer.luckycardgame.model.card.Card
 import hd.softeer.luckycardgame.model.state.GameState
 import hd.softeer.luckycardgame.model.LuckyGame
+import hd.softeer.luckycardgame.model.WinnersInfo
 import hd.softeer.luckycardgame.model.game.User
 import hd.softeer.luckycardgame.model.state.CardKind
 
@@ -67,12 +68,12 @@ class MainActivityViewModel : ViewModel() {
         return gameManager.isTurnCountLeft(userId)
     }
 
-    fun getWinnersNumber(): List<Int> {
-        return gameManager.getWinnersNumber()
-    }
-
     fun isMyTurn(userId: Int): Boolean {
         return gameManager.isMyTurn(userId)
+    }
+
+    fun getWinnersInfo(): List<WinnersInfo> {
+        return gameManager.getWinnersInfo()
     }
 
 

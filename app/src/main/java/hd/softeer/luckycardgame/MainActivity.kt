@@ -1,5 +1,6 @@
 package hd.softeer.luckycardgame
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,11 +12,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import hd.softeer.luckycardgame.adapter.CardSectionAdapter
+import hd.softeer.luckycardgame.adapter.PlayerCardsAdapter
 import hd.softeer.luckycardgame.adapter.SharedCardsAdapter
 import hd.softeer.luckycardgame.adapter.decorator.PlayerCardItemDecorator
 import hd.softeer.luckycardgame.adapter.decorator.SharedCardItemDecorator
 import hd.softeer.luckycardgame.databinding.ActivityMainBinding
+import hd.softeer.luckycardgame.model.WinnersInfo
 import hd.softeer.luckycardgame.model.state.CardKind
 import hd.softeer.luckycardgame.model.state.GameState
 
@@ -60,6 +62,10 @@ class MainActivity : AppCompatActivity() {
             binding.tvCardSectionD,
             binding.tvCardSectionE
         )
+        binding.btRestart.setOnClickListener {
+            viewModel.startGame(viewModel.playersList.value!!.size)
+            it.visibility=View.GONE
+        }
 
         observeCardSize()
         observeGameEndState()
@@ -121,15 +127,14 @@ class MainActivity : AppCompatActivity() {
         viewModel.gameState.observe(this) {
             when (it) {
                 GameState.GameEndWithWinners -> {
-                    Log.d(
-                        TAG, "Game Ended winners:${viewModel.getWinnersNumber().joinToString(" ")}"
-                    )
+                    startResultActivity()
                 }
 
                 GameState.GameEndWithNoWinners -> {
                     Toast.makeText(
                         this@MainActivity, getString(R.string.toast_game_end_with_no_winners), Toast.LENGTH_SHORT
                     ).show()
+                    binding.btRestart.visibility=View.VISIBLE
                 }
 
                 GameState.BonusCardStage -> {
@@ -138,15 +143,18 @@ class MainActivity : AppCompatActivity() {
                         getString(R.string.toast_bonus_stage_explain),
                         Toast.LENGTH_SHORT
                     ).show()
-
-
                 }
 
                 else -> {}
             }
         }
     }
+    private fun startResultActivity(){
+        val intent= Intent(this,GameResultActivity::class.java)
+        intent.putParcelableArrayListExtra(WINNERS_NUMBER,ArrayList(viewModel.getWinnersInfo()))
 
+        startActivity(intent)
+    }
 
     private fun getCardSectionText(playerNum: Int): String {
         return when (playerNum) {
@@ -186,7 +194,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setCardRecyclerView(playerNum: Int) {
         card_section_rv_list[playerNum].apply {
-            val cardAdapter = CardSectionAdapter(
+            val cardAdapter = PlayerCardsAdapter(
                 playerNum,
                 viewModel.playersList.value!![playerNum].cardList,
                 viewModel.cardWidth,
@@ -286,6 +294,7 @@ class MainActivity : AppCompatActivity() {
                 viewModel.setCardHeight(scale, binding.tvCardSectionA.height)
 
                 initCardRecyclerView()
+                observeCardList()
 
                 binding.tvCardSectionA.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
@@ -296,6 +305,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "Main Activity"
         private const val SHARED_CARD_SECTION_ID = 1000
+        private const val WINNERS_NUMBER="winners number"
     }
 
 

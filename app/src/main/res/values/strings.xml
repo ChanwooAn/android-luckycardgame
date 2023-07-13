@@ -9,7 +9,7 @@
     <string name="card_section_B_text">B</string>
     <string name="card_section_A_text">A</string>
     <string name="initial_explain">버튼을 눌러 게임을 진행할 인원을 선택해주세요.</string>
-    <string name="toast_bonus_stage_explain">보너스 스테이지를 진행합니다. 플레이어 순서대로 바닥카드 하나를 뒤집어 주세요.</string>
+    <string name="toast_bonus_stage_explain">보너스 스테이지를 진행합니다.</string>
     <string name="toast_game_end_with_no_winners">무승부 입니다. 게임을 다시 시작합니다.</string>
     <string name="result_activity_bt_restart">재시작</string>
     <string name="result_activity_tv_winner_result">이번 게임은 %s와 %s가 승리했습니다</string>
