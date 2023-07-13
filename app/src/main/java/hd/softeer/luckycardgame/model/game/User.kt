@@ -1,4 +1,6 @@
-package hd.softeer.luckycardgame.model
+package hd.softeer.luckycardgame.model.game
+
+import hd.softeer.luckycardgame.model.card.Card
 
 data class User(
     val cardList: MutableList<Card>,

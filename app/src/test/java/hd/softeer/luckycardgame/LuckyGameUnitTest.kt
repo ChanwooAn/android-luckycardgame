@@ -1,8 +1,8 @@
 package hd.softeer.luckycardgame
 
-import hd.softeer.luckycardgame.model.Animal
-import hd.softeer.luckycardgame.model.Card
-import hd.softeer.luckycardgame.model.CardNumber
+import hd.softeer.luckycardgame.model.card.Animal
+import hd.softeer.luckycardgame.model.card.Card
+import hd.softeer.luckycardgame.model.card.CardNumber
 import org.junit.Test
 import org.junit.Assert.assertEquals
 import org.junit.Before

@@ -1,4 +1,4 @@
-package hd.softeer.luckycardgame.model
+package hd.softeer.luckycardgame.model.card
 
 enum class Animal(val emoji: String) {
     Dog("🐶"),

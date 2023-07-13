@@ -3,9 +3,11 @@ package hd.softeer.luckycardgame
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import hd.softeer.luckycardgame.model.Card
+import hd.softeer.luckycardgame.model.card.Card
+import hd.softeer.luckycardgame.model.state.GameState
 import hd.softeer.luckycardgame.model.LuckyGame
-import hd.softeer.luckycardgame.model.User
+import hd.softeer.luckycardgame.model.game.User
+import hd.softeer.luckycardgame.model.state.CardKind
 
 class MainActivityViewModel : ViewModel() {
 
@@ -24,14 +26,14 @@ class MainActivityViewModel : ViewModel() {
     private var _cardHeight = 0
     val cardHeight get() = _cardHeight
 
-    private val _endFlg = MutableLiveData<Boolean>()
-    val endFlg: LiveData<Boolean> get() = _endFlg
+    private val _gameState = MutableLiveData<GameState>()
+    val gameState: LiveData<GameState> get() = _gameState
 
 
     init {
         _playersList.value = mutableListOf()
         _sharedCardList.value = mutableListOf()
-        _endFlg.value = false
+        _gameState.value = GameState.GameNotEnd
     }
 
     fun setCardWidth(scale: Float, parentPixelWidth: Int) {
@@ -56,9 +58,9 @@ class MainActivityViewModel : ViewModel() {
         _sharedCardList.value = gameManager.getSharedCardInfo()
     }
 
-    fun updateCardState(position: Int, userId: Int) {
-        gameManager.updateGameInfo(position, userId)
-        _endFlg.value = gameManager.getEndState()
+    fun updateCardState(position: Int, cardKind: CardKind) {
+        gameManager.updateGameInfo(position, cardKind)
+        _gameState.value = gameManager.getGameState()
     }
 
     fun isTurnCountLeft(userId: Int): Boolean {
@@ -67,6 +69,10 @@ class MainActivityViewModel : ViewModel() {
 
     fun getWinnersNumber(): List<Int> {
         return gameManager.getWinnersNumber()
+    }
+
+    fun isMyTurn(userId: Int): Boolean {
+        return gameManager.isMyTurn(userId)
     }
 
 

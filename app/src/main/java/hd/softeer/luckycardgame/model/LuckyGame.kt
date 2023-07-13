@@ -1,7 +1,15 @@
 package hd.softeer.luckycardgame.model
 
+import android.util.Log
+import hd.softeer.luckycardgame.model.card.Animal
+import hd.softeer.luckycardgame.model.card.Card
+import hd.softeer.luckycardgame.model.card.CardNumber
+import hd.softeer.luckycardgame.model.card.CardState
+import hd.softeer.luckycardgame.model.game.GameInfo
+import hd.softeer.luckycardgame.model.state.GameState
+import hd.softeer.luckycardgame.model.game.User
+import hd.softeer.luckycardgame.model.state.CardKind
 import kotlin.math.absoluteValue
-
 
 class LuckyGame {
 
@@ -99,61 +107,117 @@ class LuckyGame {
         return false
     }
 
-    fun updateGameInfo(position: Int, userId: Int) {
-        val targetUser = gameInfo.users[userId]
+    fun updateGameInfo(position: Int, cardKind: CardKind) {
+        when (cardKind) {
+            CardKind.PlayerCard -> {
+                updateUserCardState(position)
+            }
+
+            CardKind.SharedCard -> {
+                updateSharedCardState(position)
+            }
+        }
+        checkWinners()
+        updateTurnState()
+    }
+
+    private fun updateUserCardState(position: Int) {
+        val targetUserId = gameInfo.userNow
+        val targetUser = gameInfo.users[targetUserId]
 
         with(targetUser) {
             cardList[position].state = CardState.CARD_OPEN
             turningCount++
-            if (checkTriple(position, userId)) {
-                acquiredCardList.add(cardList[position].number.num)
-                checkWinners()//승자 체크해서 플레이어 넘버를 추가시켜서 관리하고,
+            updateAcquiredCardList(position)
+        }//유저의 카드 뒤집은 횟수 올리고 승리 조건 달성자 있는지 검사
+    }
+
+
+    private fun updateSharedCardState(position: Int) {
+        val userNow = gameInfo.users[gameInfo.userNow]
+        Log.d("SharedCardState", gameInfo.users.map { it.turningCount }.joinToString(" "))
+        gameInfo.sharedCardList[position].state = CardState.CARD_OPEN
+        with(userNow) {
+            turningCount++
+            cardList.add(gameInfo.sharedCardList[position])
+            sortCardAsc(this.cardList)
+            for (i in 1 until userNow.cardList.size) {
+                updateAcquiredCardList(i)
             }
         }
 
-        if (isTurnEnd()) {
-            initiateTurnCnt()
+    }
+
+    private fun updateAcquiredCardList(cardPosition: Int) {
+        val userNumber = gameInfo.userNow
+        val card = gameInfo.users[userNumber].cardList[cardPosition]
+        if (checkTriple(cardPosition, userNumber)) {
+            gameInfo.users[userNumber].acquiredCardList.add(card.number.num)
         }
     }
 
+    private fun updateTurnState() {
+        val userNow = gameInfo.users[gameInfo.userNow]
+        if (userNow.turningCount % 3 == 0 || userNow.turningCount >= userNow.cardList.size) {
+            gameInfo.userNow = (gameInfo.userNow + 1) % gameInfo.users.size
+        }// user의 턴이 끝나면 현재 플레이하고 있는 유저의 정보를 다음사람으로 변경
 
-    private fun isTurnEnd(): Boolean {
-        for (user in gameInfo.users) {
-            if (user.turningCount < 3) {
-                return false
-            }
-        }
-
-        return true
+        val turnEndCnt = (gameInfo.turn + 1) * (gameInfo.users.size * 3)
+        if (gameInfo.users.sumOf { it.turningCount } == turnEndCnt) {
+            gameInfo.turn++
+        }//턴이 끝날 경우 update
     }
 
-    private fun initiateTurnCnt() {
-        for (user in gameInfo.users) {
-            user.turningCount = 0
-        }
-    }
 
     /**
-     * winner가 존재하면 true를 return
+     * GameState를 return
+     * 1. 승자가 발생하고, 모든 플레이어가 3장을 뒤집어 턴을 끝났을 경우 GameEndWithWinners를 return
+     * 2. 플레이어가 가지고 있는 카드를 전부 뒤집었고 맨 밑의 칸에서 보너스 카드를 뽑아야 하는 상태일 때 BonusCardStage를 return
+     * 3. 플레이어가 가지고 있는 카드를 전부 뒤집었고 보너스카드 까지 뽑았지만 승자가 발생하지 않았을 때 GameEndWithNoWinners를 return
+     * 4. 게임이 진행중이라면 GameNotEnd를 return
      */
-    private fun getWinnerState(): Boolean {
-        return gameInfo.winners.isNotEmpty()
+    fun getGameState(): GameState {
+        val playerCardSize = getPlayerCardSize()
+
+        val isAllPlayersCardsOpen =
+            gameInfo.users.find { it.turningCount != playerCardSize } == null
+        val isEndWithNoWinners =
+            gameInfo.users.find { it.turningCount != playerCardSize + 1 } == null
+        val isThisTurnEnd = (gameInfo.users.find { it.turningCount % 3 != 0 }) == null
+        val isWinnerExist = gameInfo.winners.isNotEmpty()
+        Log.d(
+            "GameState", "$isAllPlayersCardsOpen $isEndWithNoWinners $isThisTurnEnd $isWinnerExist"
+        )
+        return if (isWinnerExist && isThisTurnEnd) {
+            GameState.GameEndWithWinners
+        } else if (isAllPlayersCardsOpen) {
+            GameState.BonusCardStage
+        } else if (isEndWithNoWinners) {
+            GameState.GameEndWithNoWinners
+        } else {
+            GameState.GameNotEnd
+        }
     }
 
-    /**
-     * winner가 존재하고, 모든 플레이어가 턴을 마무리 했을 때 true를 return
-     */
-    fun getEndState(): Boolean {
-        val isAllPlayerEnd = gameInfo.users.find { it.turningCount != 3 }
-        return getWinnerState() && isAllPlayerEnd == null
+    private fun getPlayerCardSize(): Int {
+        return when (gameInfo.users.size) {
+            3 -> PLAYER_CARD_SIZE_CASE_THREE
+            4 -> PLAYER_CARD_SIZE_CASE_FOUR
+            else -> PLAYER_CARD_SIZE_CASE_FIVE
+        }
     }
+
 
     fun getWinnersNumber(): List<Int> {
         return gameInfo.winners
     }
 
     fun isTurnCountLeft(userId: Int): Boolean {
-        return gameInfo.users[userId].turningCount < 3
+        return (gameInfo.users[userId].turningCount / 3) == gameInfo.turn
+    }
+
+    fun isMyTurn(userId: Int): Boolean {
+        return gameInfo.userNow == userId
     }
 
     private fun checkTriple(cardPosition: Int, userId: Int): Boolean {
@@ -179,9 +243,7 @@ class LuckyGame {
 
         for ((first, second, third) in tripleCase) {
             if (isPositionValidate(first) && isPositionValidate(second) && isPositionValidate(third) && isCardsSame(
-                    userCardList[first],
-                    userCardList[second],
-                    userCardList[third]
+                    userCardList[first], userCardList[second], userCardList[third]
                 )
             ) {
                 isSame = true
@@ -189,6 +251,12 @@ class LuckyGame {
         }
 
         return isSame
+    }
+
+    companion object {
+        private const val PLAYER_CARD_SIZE_CASE_THREE = 8
+        private const val PLAYER_CARD_SIZE_CASE_FOUR = 7
+        private const val PLAYER_CARD_SIZE_CASE_FIVE = 6
     }
 
 

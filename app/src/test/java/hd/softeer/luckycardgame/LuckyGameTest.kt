@@ -1,10 +1,10 @@
 package hd.softeer.luckycardgame
 
-import hd.softeer.luckycardgame.model.Animal
-import hd.softeer.luckycardgame.model.Card
-import hd.softeer.luckycardgame.model.CardNumber
-import hd.softeer.luckycardgame.model.CardState
-import hd.softeer.luckycardgame.model.GameInfo
+import hd.softeer.luckycardgame.model.card.Animal
+import hd.softeer.luckycardgame.model.card.Card
+import hd.softeer.luckycardgame.model.card.CardNumber
+import hd.softeer.luckycardgame.model.card.CardState
+import hd.softeer.luckycardgame.model.game.GameInfo
 import hd.softeer.luckycardgame.model.LuckyGame
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

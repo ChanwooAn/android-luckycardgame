@@ -5,4 +5,5 @@
     <color name="card_section_color">#E2E2E2</color>
     <color name="bottom_card_section_color">#626262</color>
     <color name="card_section_text_color">#80808080</color>
+    <color name="winner_card_section_background">#cd5c5c</color>
 </resources>

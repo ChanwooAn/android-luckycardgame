@@ -1,4 +1,4 @@
-package hd.softeer.luckycardgame.model
+package hd.softeer.luckycardgame.model.card
 
 data class Card(
     val type: Animal,

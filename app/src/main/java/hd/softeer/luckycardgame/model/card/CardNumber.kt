@@ -1,4 +1,4 @@
-package hd.softeer.luckycardgame.model
+package hd.softeer.luckycardgame.model.card
 
 data class CardNumber(val num:Int){
     init {

@@ -6,14 +6,18 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import hd.softeer.luckycardgame.adapter.CardSectionAdapter
+import hd.softeer.luckycardgame.adapter.SharedCardsAdapter
+import hd.softeer.luckycardgame.adapter.decorator.PlayerCardItemDecorator
+import hd.softeer.luckycardgame.adapter.decorator.SharedCardItemDecorator
 import hd.softeer.luckycardgame.databinding.ActivityMainBinding
-import hd.softeer.luckycardgame.model.Animal
-import hd.softeer.luckycardgame.model.Card
-import hd.softeer.luckycardgame.model.CardNumber
+import hd.softeer.luckycardgame.model.state.CardKind
+import hd.softeer.luckycardgame.model.state.GameState
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,11 +28,11 @@ class MainActivity : AppCompatActivity() {
         ViewModelProvider(this)[MainActivityViewModel::class.java]
     }
 
-    private val onCardClickedInfoUpdateCallback = { position: Int, userId: Int ->
-        viewModel.updateCardState(position, userId)
+    private val onUserCardClickedInfoUpdateCallback = { position: Int, cardKind: CardKind ->
+        viewModel.updateCardState(position, cardKind)
     }
     private val isTurnCountLeft = { userId: Int ->
-        viewModel.isTurnCountLeft(userId)
+        viewModel.isMyTurn(userId) && viewModel.isTurnCountLeft(userId)
     }
 
     private lateinit var card_section_tv_list: List<TextView> //iteration을 위해 각 카드 영역의 textview와 recycler view를 list로 관리.
@@ -99,8 +103,11 @@ class MainActivity : AppCompatActivity() {
             for (playerNum in playerCardList.indices) {
                 if (playerCardList[playerNum].cardList.isNotEmpty()) {
                     card_section_tv_list[playerNum].text = ""
+                    binding.bottomSection.text = ""
                 } else {
                     card_section_tv_list[playerNum].text = getCardSectionText(playerNum)
+                    binding.bottomSection.text = getString(R.string.initial_explain)
+
                 }//card list가 비었을 때만 textView에서 text표시
                 setCardRecyclerView(playerNum)
             }
@@ -111,9 +118,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeGameEndState() {
-        viewModel.endFlg.observe(this) {
-            if (it) {
-                Log.d(TAG, "Game Ended winners:${viewModel.getWinnersNumber().joinToString(" ")}")
+        viewModel.gameState.observe(this) {
+            when (it) {
+                GameState.GameEndWithWinners -> {
+                    Log.d(
+                        TAG, "Game Ended winners:${viewModel.getWinnersNumber().joinToString(" ")}"
+                    )
+                }
+
+                GameState.GameEndWithNoWinners -> {
+                    Toast.makeText(
+                        this@MainActivity, getString(R.string.toast_game_end_with_no_winners), Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                GameState.BonusCardStage -> {
+                    Toast.makeText(
+                        this@MainActivity,
+                        getString(R.string.toast_bonus_stage_explain),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+
+                }
+
+                else -> {}
             }
         }
     }
@@ -162,7 +191,7 @@ class MainActivity : AppCompatActivity() {
                 viewModel.playersList.value!![playerNum].cardList,
                 viewModel.cardWidth,
                 viewModel.cardHeight,
-                onCardClickedInfoUpdateCallback,
+                onUserCardClickedInfoUpdateCallback,
                 isTurnCountLeft
             )
             adapter = cardAdapter
@@ -187,14 +216,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.rvCardShared.apply {
-            val cardAdapter = CardSectionAdapter(
-                SHARED_CARD_SECTION_ID,
+            val cardAdapter = SharedCardsAdapter(
                 viewModel.sharedCardList.value!!,
                 viewModel.cardWidth,
                 viewModel.cardHeight,
-                onCardClickedInfoUpdateCallback,
-                isTurnCountLeft
-            )
+            ) { position: Int, cardKind: CardKind ->
+                viewModel.updateCardState(position, cardKind)
+            }
             adapter = cardAdapter
             layoutManager = GridLayoutManager(this@MainActivity, gridSpan)
             for (i in 0 until itemDecorationCount) {
